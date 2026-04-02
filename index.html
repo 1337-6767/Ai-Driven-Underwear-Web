@@ -6,59 +6,59 @@
     <title>AURA Ecosystem | 千億級賽博感官矩陣</title>
     <style>
         /* =========================================
-           [ARCHITECTURE] CORE VARIABLES
+           [ARCH: CSS VARIABLES & RESET] 
            ========================================= */
         :root {
             --midnight: #010102; --space-gray: #090a0c; --starlight: #f5f5f7;
             --accent: #ff003c; --accent-glow: rgba(255, 0, 60, 0.5);
             --font-main: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang TC", sans-serif;
-            --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-fluid: cubic-bezier(0.25, 1, 0.5, 1);
+            --ease-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; user-select: none; -webkit-user-drag: none; }
         
         html, body { 
-            width: 100%; height: 100%; overflow: hidden; 
+            width: 100%; height: 100%; overflow: hidden; overscroll-behavior: none;
             background-color: var(--midnight); color: var(--starlight); 
-            font-family: var(--font-main); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+            font-family: var(--font-main); -webkit-font-smoothing: antialiased; 
         }
 
         body::before {
             content: ''; position: fixed; inset: 0; z-index: 99998; pointer-events: none; opacity: 0.035;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            will-change: transform;
         }
 
-        /* =========================================
-           [VIRTUAL SCROLL & FLUID SCROLLBAR]
+        /* =========================================[ARCH: VIRTUAL SCROLL & LIQUID PROGRESS] 
            ========================================= */
         #smooth-wrapper { position: fixed; top: 0; left: 0; width: 100%; will-change: transform; transform: translate3d(0, 0, 0); }
 
         .liquid-scroll-container {
-            position: fixed; right: 1.2vw; top: 12vh; bottom: 12vh; width: 12px; z-index: 9999;
+            position: fixed; right: 1.2vw; top: 12vh; bottom: 12vh; width: 10px; z-index: 9999;
             background: rgba(255, 255, 255, 0.02); border-radius: 20px;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.05);
             backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
         }
-        .liquid-scroll-gooey { position: absolute; inset: -10px; pointer-events: none; filter: url('#gooey-scroll'); }
+        .liquid-scroll-gooey { position: absolute; inset: -20px; pointer-events: none; filter: url('#gooey-scroll'); overflow: hidden; }
         .liquid-scroll-fill {
-            position: absolute; bottom: 10px; left: 50%; width: 4px; height: calc(100% - 20px);
-            margin-left: -2px; background: var(--accent); border-radius: 10px;
-            transform-origin: bottom; transform: scaleY(0); will-change: transform;
-            box-shadow: 0 0 15px rgba(255,0,60,0.4);
+            position: absolute; bottom: 20px; left: 50%; width: 4px; height: 100%; margin-left: -2px;
+            background: var(--accent); border-radius: 10px; 
+            transform: translate3d(0, 100%, 0); will-change: transform;
         }
         .liquid-scroll-drop {
-            position: absolute; bottom: 10px; left: 50%; width: 12px; height: 12px; margin-left: -6px; 
-            background: var(--accent); border-radius: 50%; transform-origin: center; will-change: transform;
+            position: absolute; top: 0; left: 50%; width: 10px; height: 10px; margin-left: -5px; margin-top: -5px;
+            background: var(--accent); border-radius: 50%; will-change: transform;
         }
 
         /* =========================================
-           [OPTICS] CURSOR & BACKGROUND
+           [ARCH: OPTICS & CURSOR] 
            ========================================= */
         .bg-fluid-layer { position: fixed; inset: 0; z-index: -2; overflow: hidden; filter: url('#gooey-bg'); pointer-events: none; }
-        .bg-blob { position: absolute; border-radius: 50%; filter: blur(40px); opacity: 0.3; will-change: transform; }
+        .bg-blob { position: absolute; border-radius: 50%; filter: blur(45px); opacity: 0.25; will-change: transform; }
         .blob-a { width: 60vw; height: 60vw; background: #1a050a; top: -10%; left: -10%; }
         .blob-b { width: 70vw; height: 70vw; background: #0a0510; bottom: -20%; right: -10%; }
-        #mouse-blob { width: 400px; height: 400px; background: rgba(255, 0, 60, 0.05); top: -200px; left: -200px; mix-blend-mode: screen; transition: opacity 0.5s; }
+        #mouse-blob { width: 350px; height: 350px; background: rgba(255, 0, 60, 0.05); top: -175px; left: -175px; mix-blend-mode: screen; transition: opacity 0.3s; will-change: transform; }
         
         #cursor-lens {
             position: fixed; top: 0; left: 0; width: 18px; height: 18px; border-radius: 50%; pointer-events: none; z-index: 99999;
@@ -67,7 +67,7 @@
             backdrop-filter: blur(6px) saturate(200%); -webkit-backdrop-filter: blur(6px) saturate(200%);
             border: 1px solid rgba(255,255,255,0.4); mix-blend-mode: screen;
             will-change: transform, width, height; transform: translate3d(-50%, -50%, 0);
-            transition: width 0.3s var(--ease-expo), height 0.3s var(--ease-expo), background 0.3s, border-color 0.3s;
+            transition: width 0.3s var(--ease-fluid), height 0.3s var(--ease-fluid), border-color 0.3s;
         }
         #cursor-lens.active {
             width: 80px; height: 80px; border-color: rgba(255,0,60,0.4);
@@ -76,22 +76,23 @@
         }
 
         /* =========================================
-           [NAVIGATION]
+           [ARCH: NAVIGATION] 
            ========================================= */
         nav {
             position: fixed; top: 0; left: 0; width: 100vw; height: 70px; z-index: 10000;
             background: rgba(2, 2, 3, 0.5); backdrop-filter: blur(30px) saturate(200%); -webkit-backdrop-filter: blur(30px) saturate(200%);
             border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; justify-content: space-between; align-items: center; padding: 0 4vw;
         }
-        .logo { display: flex; align-items: center; gap: 15px; font-weight: 800; font-size: 1.3rem; letter-spacing: 0.25em; text-transform: uppercase; }
-        .nav-links { display: flex; gap: 1.8vw; font-size: 0.75rem; color: #888; font-weight: 600; letter-spacing: 0.1em; flex-wrap: wrap; justify-content: flex-end;}
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.2rem; letter-spacing: 0.2em; text-transform: uppercase; }
+        .nav-links { display: flex; gap: 1.5vw; font-size: 0.75rem; color: #888; font-weight: 600; letter-spacing: 0.1em; flex-wrap: wrap; justify-content: flex-end;}
         .nav-links a { color: inherit; text-decoration: none; transition: color 0.3s; position: relative; }
         .nav-links a:hover, .nav-links a.active { color: #fff; text-shadow: 0 0 12px rgba(255,255,255,0.5); }
-        .nav-links a.active::after { content: ''; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); width: 20px; height: 2px; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+        .nav-links a.active::after { content: ''; position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); width: 20px; height: 2px; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
 
-        /* =========================================[LAYOUT & LIQUID PANELS]
+        /* =========================================
+           [ARCH: SECTION & LIQUID PANELS] 
            ========================================= */
-        section { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 15vh 5vw; border-bottom: 1px solid rgba(255,255,255,0.015); }
+        section { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 15vh 5vw; border-bottom: 1px solid rgba(255,255,255,0.015); contain: content; }
         .container { max-width: 1400px; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 6vw; z-index: 10; }
         .container.reverse { flex-direction: row-reverse; }
         .container.center { flex-direction: column; text-align: center; justify-content: center; }
@@ -103,99 +104,144 @@
             border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
             box-shadow: inset 2px 2px 10px rgba(255,255,255,0.1), inset -2px -2px 15px rgba(0,0,0,0.6), 0 40px 80px -20px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.05);
             backdrop-filter: blur(40px) saturate(200%); -webkit-backdrop-filter: blur(40px) saturate(200%);
-            animation: morph-liquid 15s ease-in-out infinite alternate; overflow: hidden; transform-style: preserve-3d;
+            overflow: hidden; transform-style: preserve-3d; transition: height 0.5s var(--ease-fluid);
+            animation: morph-liquid 15s ease-in-out infinite alternate paused; will-change: transform;
         }
+        .is-visible .liquid-panel { animation-play-state: running; }
         .liquid-panel::before {
             content: ''; position: absolute; inset: 0; pointer-events: none; mix-blend-mode: overlay; z-index: 1;
             background: radial-gradient(600px circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.15), transparent 50%);
         }
-        .liquid-content { position: relative; z-index: 2; transform: translateZ(40px); text-align: left; }
+        .liquid-content { position: relative; z-index: 2; transform: translateZ(40px); text-align: left; will-change: transform; }
         .center .liquid-content { text-align: center; }
 
         @keyframes morph-liquid { 0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; } 33% { border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%; } 66% { border-radius: 50% 70% 40% 60% / 60% 40% 70% 30%; } 100% { border-radius: 70% 30% 50% 50% / 30% 50% 50% 70%; } }
 
         h5 { font-size: 0.8rem; letter-spacing: 0.5em; color: var(--accent); text-transform: uppercase; margin-bottom: 1.2rem; font-weight: 700; text-shadow: 0 0 15px var(--accent-glow); }
-        h1 { font-size: clamp(2rem, 3.5vw, 4rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 1.5rem; background: linear-gradient(180deg, #fff 0%, #666 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        h1 { font-size: clamp(2rem, 3.5vw, 4rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 1.5rem; background: linear-gradient(180deg, #fff 0%, #666 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); }
         p { font-size: clamp(1rem, 1.1vw, 1.2rem); line-height: 1.7; color: #a1a1a6; font-weight: 400; margin-bottom: 1.5rem; }
         .highlight { color: #fff; -webkit-text-fill-color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.4); font-weight: 600; }
 
-        .reveal { opacity: 0; transform: translateY(60px); transition: all 1.2s var(--ease-expo); will-change: transform, opacity; }
-        .in-view.reveal, .in-view .reveal { opacity: 1; transform: translateY(0); }
+        /* Staggered Reveal Logic */
+        .reveal { opacity: 0; transform: translateY(60px); transition: opacity 1s var(--ease-fluid), transform 1s var(--ease-fluid); will-change: transform, opacity; }
+        .is-visible .reveal { opacity: 1; transform: translateY(0); }
         .delay-1 { transition-delay: 0.1s; } .delay-2 { transition-delay: 0.2s; }
 
-        /* =========================================[TOY BOX BASE]
+        /* =========================================
+           [ARCH: 12 INTERACTIVE TOY MODULES]
            ========================================= */
         .toy-box { 
             width: 420px; height: 420px; border-radius: 40px; background: linear-gradient(145deg, #0d0d10, #050506);
             border: 1px solid rgba(255,255,255,0.04); box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 40px 80px rgba(0,0,0,0.9);
             display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden; transform-style: preserve-3d;
+            will-change: transform; touch-action: none;
         }
 
-        /* --- TOY 1: 3D Underwear --- */
+        /* 1. 3D Underwear */
         .aura-body { fill: var(--space-gray); stroke: rgba(255,255,255,0.08); stroke-width: 1.5; }
         .aura-waistband { fill: url(#metal-grad); stroke: rgba(255,255,255,0.15); stroke-width: 1; }
         .aura-glass { fill: rgba(255,255,255,0.02); filter: blur(2px); mix-blend-mode: screen; }
 
-        /* --- TOY 2: AURA Core (Chip) --- */
-        .chip-core { width: 140px; height: 140px; border: 2px solid rgba(255,255,255,0.1); border-radius: 20px; background: #000; position: relative; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 0 30px #000, 0 20px 40px rgba(0,0,0,0.8); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer !important; }
+        /* 2. Core Chip */
+        .chip-core { width: 140px; height: 140px; border: 2px solid rgba(255,255,255,0.1); border-radius: 20px; background: #000; position: relative; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 0 30px #000, 0 20px 40px rgba(0,0,0,0.8); transition: transform 0.2s cubic-bezier(0.1, 0.8, 0.3, 1), box-shadow 0.2s; touch-action: none; }
         .chip-core::before { content:'A1'; color:rgba(255,255,255,0.2); font-size:2rem; font-weight:800; letter-spacing:0.1em; }
-        .circuit-line { position: absolute; background: var(--accent); opacity: 0.2; transition: opacity 0.3s, box-shadow 0.3s; }
-        .chip-core.charging { transform: scale(0.95); box-shadow: inset 0 0 50px var(--accent), 0 0 80px var(--accent); }
+        .circuit-line { position: absolute; background: var(--accent); opacity: 0.2; transition: opacity 0.3s; }
+        .chip-core.charging { transform: scale(0.9); box-shadow: inset 0 0 50px var(--accent), 0 0 80px var(--accent); }
         .chip-core.charging .circuit-line { opacity: 1; box-shadow: 0 0 15px var(--accent); }
-        .shockwave { position: absolute; inset: 0; border: 2px solid var(--accent); border-radius: 20px; opacity: 0; transform: scale(1); pointer-events: none; }
-        @keyframes blast { 0% { transform: scale(1); opacity: 1; border-width: 10px; } 100% { transform: scale(3); opacity: 0; border-width: 0px; } }
 
-        /* --- TOY 3: Neural Spine --- */
-        .spine-container { display: flex; flex-direction: column; gap: 8px; transform: translateZ(50px); }
+        /* 3. Quantum Sync */
+        .sync-node { position: absolute; width: 60px; height: 60px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); touch-action: none; will-change: transform; }
+        .sync-node::after { content: ''; width: 10px; height: 10px; background: #fff; border-radius: 50%; box-shadow: 0 0 15px #fff; pointer-events: none; }
+        #sync-target { top: 50%; right: 20%; transform: translate3d(0, -50%, 0); }
+        #sync-drag { top: 50%; left: 20%; transform: translate3d(0, -50%, 0); }
+
+        /* 4. Neural Spine */
+        .spine-container { display: flex; flex-direction: column; gap: 8px; transform: translateZ(50px); touch-action: none; }
         .vertebra { width: 60px; height: 18px; background: #1a1a1c; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); transition: 0.2s; position: relative; }
         .vertebra::after { content:''; position:absolute; inset:0; margin:auto; width:6px; height:6px; background:var(--accent); border-radius:50%; opacity:0.1; transition:0.1s; }
         .vertebra.active::after { opacity:1; box-shadow: 0 0 20px var(--accent); }
 
-        /* --- TOY 4: Quantum Sync --- */
-        .sync-node { position: absolute; width: 60px; height: 60px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); transition: box-shadow 0.3s, background 0.3s; }
-        .sync-node::after { content: ''; width: 10px; height: 10px; background: #fff; border-radius: 50%; box-shadow: 0 0 15px #fff; }
-        #sync-target { top: 50%; right: 20%; transform: translateY(-50%); }
-        #sync-drag { top: 50%; left: 20%; transform: translateY(-50%); cursor: grab !important; }
-        .sync-flare { position: absolute; top: 50%; right: 20%; width: 60px; height: 60px; border-radius: 50%; background: #fff; transform: translateY(-50%) scale(0); opacity: 0; mix-blend-mode: screen; pointer-events: none; }
-        @keyframes sync-blast { 0% { transform: translateY(-50%) scale(1); opacity: 1; box-shadow: 0 0 100px 50px rgba(255,255,255,0.8); } 100% { transform: translateY(-50%) scale(5); opacity: 0; } }
+        /* 5. Fluid Cartridge */
+        .fluid-cartridge { width: 120px; height: 280px; border-radius: 60px; border: 2px solid rgba(255,255,255,0.05); background: #000; position: relative; overflow: hidden; box-shadow: inset 0 0 50px rgba(0,0,0,0.9); touch-action: none; }
+        .fluid-level-wrap { position: absolute; inset: 0; filter: url(#gooey-bg); }
+        .fluid-level { position: absolute; bottom: 0; width: 100%; height: 100%; background: var(--accent); transform: translate3d(0, 70%, 0); will-change: transform; transition: background 0.2s; }
 
-        /* --- TOY 5: Fluid Cartridge --- */
-        .fluid-cartridge { width: 120px; height: 280px; border-radius: 60px; border: 2px solid rgba(255,255,255,0.05); background: #000; position: relative; overflow: hidden; box-shadow: inset 0 0 50px rgba(0,0,0,0.9); }
-        .fluid-level { position: absolute; bottom: 0; width: 100%; height: 30%; background: var(--accent); filter: url(#gooey-bg); transition: background 0.3s; transform-origin: bottom; will-change: transform; }
-
-        /* --- TOY 6: Analytics Graph --- */
+        /* 6. Analytics Graph */
         .graph-container { display: flex; align-items: flex-end; gap: 4px; width: 80%; height: 50%; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .bar { flex: 1; background: var(--accent); border-radius: 4px 4px 0 0; transform-origin: bottom; transform: scaleY(0.1); transition: transform 0.1s linear, background 0.2s; opacity: 0.8; }
+        .bar { flex: 1; background: var(--accent); border-radius: 4px 4px 0 0; transform-origin: bottom; transform: scaleY(0.05); will-change: transform; opacity: 0.8; }
 
-        /* --- TOY 7: Aroma Synthesis --- */
-        .aroma-dial { width: 180px; height: 180px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.05); position: relative; display: flex; justify-content: center; align-items: center; cursor: grab !important; box-shadow: inset 0 0 30px rgba(0,0,0,0.8); }
-        .aroma-knob { position: absolute; top: 10px; width: 14px; height: 14px; background: #fff; border-radius: 50%; box-shadow: 0 0 10px #fff; }
-        .aroma-cloud { position: absolute; inset: -50px; background: radial-gradient(circle, var(--aroma-color, rgba(255,0,60,0.2)) 0%, transparent 60%); filter: blur(20px); opacity: 0.5; transition: background 0.2s, opacity 0.2s; pointer-events: none; mix-blend-mode: screen; }
+        /* 7. Aroma Synthesis */
+        .aroma-dial { width: 180px; height: 180px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.05); position: relative; display: flex; justify-content: center; align-items: center; touch-action: none; box-shadow: inset 0 0 30px rgba(0,0,0,0.8); }
+        .aroma-knob { position: absolute; top: 10px; width: 14px; height: 14px; background: #fff; border-radius: 50%; box-shadow: 0 0 10px #fff; will-change: transform; }
+        .aroma-cloud { position: absolute; inset: -50px; background: radial-gradient(circle, var(--aroma-color, rgba(255,0,60,0.2)) 0%, transparent 60%); filter: blur(20px); opacity: 0.5; transition: background 0.2s; pointer-events: none; mix-blend-mode: screen; }
 
-        /* --- TOY 8: Photonic Cleanse --- */
+        /* 8. Photonic Cleanse */
         .bacteria { position: absolute; width: 12px; height: 12px; background: #aaff00; border-radius: 50%; box-shadow: 0 0 10px #aaff00; transition: transform 0.2s, opacity 0.2s; }
-        .uv-laser { position: absolute; width: 40px; height: 40px; background: radial-gradient(circle, rgba(150,0,255,0.8) 0%, transparent 70%); border-radius: 50%; pointer-events: none; opacity: 0; mix-blend-mode: screen; transition: opacity 0.1s; }
+        .uv-laser { position: absolute; width: 40px; height: 40px; background: radial-gradient(circle, rgba(150,0,255,0.8) 0%, transparent 70%); border-radius: 50%; pointer-events: none; opacity: 0; mix-blend-mode: screen; will-change: transform, opacity; }
 
-        /* --- TOY 9: Chastity Dome --- */
-        .chastity-arena { width: 100%; height: 100%; background: repeating-linear-gradient(45deg, rgba(255,0,60,0.02) 0px, rgba(255,0,60,0.02) 2px, transparent 2px, transparent 10px); position: relative; }
-        .safe-zone { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120px; height: 120px; border: 2px dashed #0f0; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #0f0; font-size: 0.7rem; text-align: center; letter-spacing: 0.2em; box-shadow: 0 0 20px rgba(0,255,0,0.1); }
-        #chase-dot { position: absolute; top: 20%; left: 20%; width: 40px; height: 40px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 20px var(--accent), inset 0 0 10px #fff; display: flex; justify-content: center; align-items: center; will-change: transform; }
-        #chase-dot::after { content: ''; width: 12px; height: 12px; background: #fff; border-radius: 50%; }
+        /* 9. Chastity Dome */
+        .chastity-arena { width: 100%; height: 100%; background: repeating-linear-gradient(45deg, rgba(255,0,60,0.02) 0px, rgba(255,0,60,0.02) 2px, transparent 2px, transparent 10px); position: relative; touch-action: none; }
+        .safe-zone { position: absolute; top: 50%; left: 50%; transform: translate3d(-50%, -50%, 0); width: 120px; height: 120px; border: 2px dashed #0f0; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #0f0; font-size: 0.7rem; text-align: center; letter-spacing: 0.2em; }
+        #chase-dot { position: absolute; top: 0; left: 0; width: 40px; height: 40px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 20px var(--accent), inset 0 0 10px #fff; display: flex; justify-content: center; align-items: center; will-change: transform; transition: transform 0.1s cubic-bezier(0.1, 0.8, 0.3, 1); }
+        #chase-dot::after { content: ''; width: 12px; height: 12px; background: #fff; border-radius: 50%; pointer-events: none;}
         .taunt-msg { position: absolute; top: 20px; width: 100%; text-align: center; color: var(--accent); font-family: monospace; font-size: 0.8rem; letter-spacing: 0.2em; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
 
-        /* --- TOY 10: G2 Mattress --- */
-        .mattress-grid { display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(12, 1fr); width: 100%; height: 100%; padding: 20px; gap: 4px; }
+        /* 10. G2 Mattress */
+        .mattress-grid { display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(12, 1fr); width: 100%; height: 100%; padding: 20px; gap: 4px; touch-action: none;}
         .mattress-cell { background: rgba(255,255,255,0.02); border-radius: 6px; transition: transform 0.4s cubic-bezier(0.1, 0.8, 0.3, 1), background 0.4s; }
         .mattress-cell.pressed { transform: scale(0.2) translateZ(-40px); background: rgba(255,0,60,0.6); box-shadow: 0 0 15px rgba(255,0,60,0.4); transition: transform 0.05s, background 0.05s; }
+
+        /* =========================================
+           [EPIC FEATURE: BIOMETRIC CONTRACT SIGNATURE]
+           ========================================= */
+        .contract-action { margin-top: 3rem; position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .btn-sign {
+            display: inline-block; padding: 18px 50px; background: #fff; color: #000; border-radius: 35px; 
+            font-weight: 800; font-size: 1.3rem; text-decoration: none; box-shadow: 0 10px 30px rgba(255,255,255,0.2);
+            transition: transform 0.2s;
+        }
+        .signature-pad-container {
+            display: none; width: 100%; max-width: 500px; margin-top: 2rem; position: relative;
+            background: #050508; border: 1px dashed rgba(255,0,60,0.5); border-radius: 20px; padding: 20px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.9); overflow: hidden;
+        }
+        .signature-prompt { color: var(--accent); font-size: 0.8rem; letter-spacing: 0.2em; text-align: center; margin-bottom: 10px; pointer-events: none; }
+        #sig-canvas { width: 100%; height: 150px; cursor: crosshair !important; touch-action: none; display: block; }
+        
+        .stamp-overlay {
+            position: absolute; inset: 0; display: flex; justify-content: center; align-items: center;
+            pointer-events: none; opacity: 0; transform: scale(3) rotate(-20deg); 
+            transition: transform 0.3s var(--ease-bounce), opacity 0.3s;
+        }
+        .stamp-overlay.stamped { opacity: 1; transform: scale(1) rotate(-10deg); }
+        .stamp-text {
+            color: #ff003c; border: 6px solid #ff003c; padding: 10px 20px; font-size: 2.5rem; font-weight: 900; 
+            letter-spacing: 0.1em; text-shadow: 0 0 20px rgba(255,0,60,0.8); box-shadow: 0 0 20px rgba(255,0,60,0.8), inset 0 0 20px rgba(255,0,60,0.8);
+            border-radius: 10px; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+        }
+        .contract-msg-box { height: 60px; margin-top: 20px; }
+        #contract-msg { color: #a1a1a6; font-size: 0.95rem; line-height: 1.5; font-family: monospace; transition: color 0.3s; }
+
+        /* Shake animation applied to body for dramatic effect */
+        @keyframes extreme-shake {
+            0% { transform: translate3d(20px, -20px, 0); }
+            20% { transform: translate3d(-20px, 20px, 0); }
+            40% { transform: translate3d(15px, -15px, 0); }
+            60% { transform: translate3d(-15px, 15px, 0); }
+            80% { transform: translate3d(5px, -5px, 0); }
+            100% { transform: translate3d(0, 0, 0); }
+        }
+        .shake-active { animation: extreme-shake 0.4s var(--ease-bounce); }
 
     </style>
 </head>
 <body>
 
+    <!-- [ARCH: INLINE SVG OPTIMIZATION] -->
     <svg style="display: none;">
         <defs>
             <filter id="gooey-bg"><feGaussianBlur in="SourceGraphic" stdDeviation="35" result="blur" /><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 60 -30" /></filter>
-            <filter id="gooey-scroll"><feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" /><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 25 -10" /></filter>
+            <filter id="gooey-scroll"><feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" /><feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -8" /></filter>
             <mask id="apple-butt"><rect width="100" height="100" fill="white" /><circle cx="85" cy="55" r="16" fill="black" /></mask>
             <linearGradient id="metal-grad" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stop-color="#2a2c2f" /><stop offset="50%" stop-color="#0b0c0e" /><stop offset="100%" stop-color="#010102" />
@@ -203,6 +249,7 @@
         </defs>
     </svg>
 
+    <!-- OPTICS & PROGRESS -->
     <div class="bg-fluid-layer"><div class="bg-blob blob-a" id="blob-a"></div><div class="bg-blob blob-b" id="blob-b"></div><div class="bg-blob" id="mouse-blob"></div></div>
     <div id="cursor-lens"></div>
 
@@ -213,7 +260,7 @@
         </div>
     </div>
 
-    <!-- GLOBAL NAVIGATION (12 Items) -->
+    <!-- NAVIGATION -->
     <nav>
         <div class="logo">
             <svg width="24" height="24" viewBox="0 0 100 100">
@@ -238,7 +285,7 @@
         <!-- 1. HERO -->
         <section id="hero">
             <div class="container center">
-                <div class="liquid-panel reveal interactive-tilt" style="max-width: 800px;">
+                <div class="liquid-panel reveal" data-tilt style="max-width: 800px;">
                     <div class="liquid-content">
                         <h5>The Cyber-Pleasure Ecosystem</h5>
                         <h1>重新定義你的<br>感官控制權。</h1>
@@ -251,7 +298,7 @@
         <!-- 2. AURA PRO -->
         <section id="pro">
             <div class="container">
-                <div class="liquid-panel reveal delay-1 interactive-tilt">
+                <div class="liquid-panel reveal delay-1" data-tilt>
                     <div class="liquid-content">
                         <h5>01. AURA Pro Base Layer</h5>
                         <h1>完美無縫的<br>實體 3D 解剖。</h1>
@@ -259,7 +306,7 @@
                     </div>
                 </div>
                 <div class="interactive-stage reveal delay-2">
-                    <div class="toy-box interactive-tilt" style="background: transparent; border: none; box-shadow: none;">
+                    <div class="toy-box" data-tilt data-toy="3d-model" style="background: transparent; border: none; box-shadow: none;">
                         <svg id="model-3d" viewBox="0 0 200 150" style="position:absolute; inset:0; width:100%; height:100%; filter: drop-shadow(0 40px 50px rgba(0,0,0,0.9)); will-change: transform;">
                             <path class="aura-body" d="M 20 40 Q 100 60 180 40 Q 190 80 160 130 Q 130 145 100 135 Q 70 145 40 130 Q 10 80 20 40 Z" />
                             <rect class="aura-waistband" x="15" y="20" width="170" height="25" rx="10" />
@@ -270,10 +317,10 @@
             </div>
         </section>
 
-        <!-- 3. AURA CORE (NEW) -->
+        <!-- 3. AURA CORE -->
         <section id="core">
             <div class="container reverse">
-                <div class="liquid-panel reveal delay-1 interactive-tilt">
+                <div class="liquid-panel reveal delay-1" data-tilt>
                     <div class="liquid-content">
                         <h5>02. The A1 Processor</h5>
                         <h1>18 兆次算力，<br>支配你的高潮。</h1>
@@ -281,22 +328,20 @@
                     </div>
                 </div>
                 <div class="interactive-stage reveal delay-2">
-                    <div class="toy-box interactive-tilt">
+                    <div class="toy-box" data-tilt data-toy="chip">
                         <div class="chip-core" id="chip-core">
                             <div class="circuit-line" style="top: 20%; left: -20px; width: 40px; height: 2px;"></div>
                             <div class="circuit-line" style="bottom: 30%; right: -30px; width: 50px; height: 2px;"></div>
-                            <div class="circuit-line" style="top: -20px; left: 40%; width: 2px; height: 40px;"></div>
-                            <div class="shockwave" id="chip-shockwave"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 4. AURA SYNC (NEW) -->
+        <!-- 4. AURA SYNC -->
         <section id="sync">
             <div class="container">
-                <div class="liquid-panel reveal delay-1 interactive-tilt">
+                <div class="liquid-panel reveal delay-1" data-tilt>
                     <div class="liquid-content">
                         <h5>03. Quantum Entanglement</h5>
                         <h1>打破距離，<br>量子伴侶糾纏。</h1>
@@ -304,8 +349,7 @@
                     </div>
                 </div>
                 <div class="interactive-stage reveal delay-2">
-                    <div class="toy-box interactive-tilt" id="sync-box">
-                        <div class="sync-flare" id="sync-flare"></div>
+                    <div class="toy-box" data-tilt data-toy="sync">
                         <div class="sync-node" id="sync-target"></div>
                         <div class="sync-node" id="sync-drag"></div>
                     </div>
@@ -316,15 +360,15 @@
         <!-- 5. AURA LINK -->
         <section id="link">
             <div class="container reverse">
-                <div class="liquid-panel reveal delay-1 interactive-tilt">
+                <div class="liquid-panel reveal delay-1" data-tilt>
                     <div class="liquid-content">
                         <h5>04. Neural Spine Implant</h5>
                         <h1>繞過大腦，<br>直達脊髓。</h1>
-                        <p>植入尾椎骨的晶片直連脊髓神經，達成 <span class="highlight">0.0001 毫秒</span> 的高潮指令傳輸。<br>游標滑過右側脊椎模型，測試神經元突觸的極限傳遞速度。</p>
+                        <p>植入尾椎骨的晶片直連脊髓神經，達成 <span class="highlight">0.0001 毫秒</span> 的指令傳輸。<br>游標滑過右側脊椎模型，測試神經元突觸速度。</p>
                     </div>
                 </div>
                 <div class="interactive-stage reveal delay-2">
-                    <div class="toy-box interactive-tilt">
+                    <div class="toy-box" data-tilt data-toy="spine">
                         <div class="spine-container" id="spine"></div>
                     </div>
                 </div>
@@ -334,56 +378,56 @@
         <!-- 6. AURA FLUID -->
         <section id="fluid">
             <div class="container">
-                <div class="liquid-panel reveal delay-1 interactive-tilt">
+                <div class="liquid-panel reveal delay-1" data-tilt>
                     <div class="liquid-content">
                         <h5>05. Viscous Dynamics</h5>
                         <h1>光學級純淨，<br>自適應黏稠度。</h1>
-                        <p>世界首款可藉由演算法改變摩擦係數的液態玻璃潤滑匣。偵測到充血度上升時自動變形。<br>上下拖曳右側液體，手動<span class="highlight">超載你的情慾水位</span>。</p>
+                        <p>世界上首款藉由演算法改變摩擦係數的液態玻璃潤滑匣。偵測到充血度上升時自動變形。<br>上下拖曳右側液體，手動<span class="highlight">超載你的情慾水位</span>。</p>
                     </div>
                 </div>
                 <div class="interactive-stage reveal delay-2">
-                    <div class="toy-box interactive-tilt" style="background: transparent; border: none; box-shadow: none;">
+                    <div class="toy-box" data-tilt data-toy="fluid" style="background: transparent; border: none; box-shadow: none;">
                         <div class="fluid-cartridge" id="fluid-tube">
-                            <div class="fluid-level" id="fluid-fill"></div>
-                            <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-90deg); color:rgba(255,255,255,0.3); font-weight:800; letter-spacing:0.2em; pointer-events:none;">DRAG TO AROUSE</div>
+                            <div class="fluid-level-wrap">
+                                <div class="fluid-level" id="fluid-fill"></div>
+                            </div>
+                            <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-90deg); color:rgba(255,255,255,0.3); font-weight:800; letter-spacing:0.2em; pointer-events:none; white-space:nowrap;">DRAG TO AROUSE</div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 7. AURA ANALYTICS (NEW) -->
+        <!-- 7. AURA ANALYTICS -->
         <section id="analytics">
             <div class="container reverse">
-                <div class="liquid-panel reveal delay-1 interactive-tilt">
+                <div class="liquid-panel reveal delay-1" data-tilt>
                     <div class="liquid-content">
                         <h5>06. Climax Metrics</h5>
                         <h1>企業級的<br>高潮數據報表。</h1>
-                        <p>精準記錄每一次抽插的深度、頻率與高潮時長。你的性生活，現在有了專業的儀表板。<br>右側波段將直接反應你<span class="highlight">滑鼠移動的狂暴程度</span>。</p>
+                        <p>記錄每一次抽插深度、頻率與高潮時長。你的性生活，現在有了專業的儀表板。<br>右側波段將直接反應你<span class="highlight">滑鼠移動的狂暴程度</span>。</p>
                     </div>
                 </div>
                 <div class="interactive-stage reveal delay-2">
-                    <div class="toy-box interactive-tilt">
-                        <div class="graph-container" id="graph-container">
-                            <!-- JS generates bars -->
-                        </div>
+                    <div class="toy-box" data-tilt data-toy="graph">
+                        <div class="graph-container" id="graph-container"></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 8. AURA AROMA (NEW) -->
+        <!-- 8. AURA AROMA -->
         <section id="aroma">
             <div class="container">
-                <div class="liquid-panel reveal delay-1 interactive-tilt">
+                <div class="liquid-panel reveal delay-1" data-tilt>
                     <div class="liquid-content">
                         <h5>07. Pheromone Synthesis</h5>
-                        <h1>強勢接管<br>對方的邊緣系統。</h1>
-                        <p>分析周圍目標的瞳孔與體溫，即時調配並釋放專屬的催情分子。<br>拖曳右側環境旋鈕，動態<span class="highlight">改變散發出的粒子顏色與迷幻氛圍</span>。</p>
+                        <h1>強勢接管<br>邊緣系統。</h1>
+                        <p>分析周圍目標的瞳孔與體溫，即時調配並釋放專屬的催情分子。<br>拖曳右側旋鈕，動態<span class="highlight">改變散發出的粒子顏色</span>。</p>
                     </div>
                 </div>
                 <div class="interactive-stage reveal delay-2">
-                    <div class="toy-box interactive-tilt">
+                    <div class="toy-box" data-tilt data-toy="aroma">
                         <div class="aroma-cloud" id="aroma-cloud"></div>
                         <div class="aroma-dial" id="aroma-dial">
                             <div class="aroma-knob" id="aroma-knob"></div>
@@ -393,20 +437,19 @@
             </div>
         </section>
 
-        <!-- 9. AURA CLEANSE (NEW) -->
+        <!-- 9. AURA CLEANSE -->
         <section id="cleanse">
             <div class="container reverse">
-                <div class="liquid-panel reveal delay-1 interactive-tilt">
+                <div class="liquid-panel reveal delay-1" data-tilt>
                     <div class="liquid-content">
                         <h5>08. Photonic Cleanse</h5>
                         <h1>光速瓦解<br>所有生物殘留。</h1>
-                        <p>內建深紫外線 (UVC) 微型雷射矩陣。脫下瞬間自動啟動光子級深層淨化。<br>你的游標已化身 UVC 雷射，在右側區域滑動，<span class="highlight">氣化所有細菌與體液粒子</span>。</p>
+                        <p>內建深紫外線微型雷射。脫下瞬間自動啟動光子級深層淨化。<br>游標已化身雷射，在右側滑動，<span class="highlight">氣化所有殘留粒子</span>。</p>
                     </div>
                 </div>
                 <div class="interactive-stage reveal delay-2">
-                    <div class="toy-box interactive-tilt" id="cleanse-box">
+                    <div class="toy-box" data-tilt data-toy="cleanse" id="cleanse-box">
                         <div class="uv-laser" id="uv-laser"></div>
-                        <!-- JS generates bacteria -->
                     </div>
                 </div>
             </div>
@@ -415,7 +458,7 @@
         <!-- 10. AURA DOME -->
         <section id="dome">
             <div class="container">
-                <div class="liquid-panel reveal delay-1 interactive-tilt">
+                <div class="liquid-panel reveal delay-1" data-tilt>
                     <div class="liquid-content">
                         <h5>09. Absolute Zero Dome</h5>
                         <h1>量子級閃避，<br>絕對貞操封鎖。</h1>
@@ -423,8 +466,8 @@
                     </div>
                 </div>
                 <div class="interactive-stage reveal delay-2">
-                    <div class="toy-box interactive-tilt" id="arena-box">
-                        <div class="chastity-arena">
+                    <div class="toy-box" data-tilt data-toy="dome">
+                        <div class="chastity-arena" id="arena-box">
                             <div class="taunt-msg" id="taunt-msg">SYSTEM SECURE</div>
                             <div class="safe-zone">FACE ID<br>UNLOCK</div>
                             <div id="chase-dot"></div>
@@ -437,348 +480,574 @@
         <!-- 11. AURA BED -->
         <section id="bed">
             <div class="container reverse">
-                <div class="liquid-panel reveal delay-1 interactive-tilt">
+                <div class="liquid-panel reveal delay-1" data-tilt>
                     <div class="liquid-content">
                         <h5>10. G2 Liquid Mattress</h5>
                         <h1>捕捉每一次<br>無助的翻身。</h1>
-                        <p>由數百萬液態微粒構成的網格床墊。在懲罰模式啟動時 <span class="highlight">瞬間抽離支撐力</span>。<br>在右側網格上滑動，感受表面張力被破壞的瞬間。</p>
+                        <p>由數百萬液態微粒構成的網格床墊。在懲罰模式啟動時 <span class="highlight">瞬間抽離支撐力</span>。<br>在右側網格滑動，感受表面張力被破壞的瞬間。</p>
                     </div>
                 </div>
                 <div class="interactive-stage reveal delay-2">
-                    <div class="toy-box interactive-tilt">
+                    <div class="toy-box" data-tilt data-toy="mattress">
                         <div class="mattress-grid" id="mattress-grid"></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 12. CHECKOUT -->
-        <section id="checkout" style="min-height: 85vh;">
+        <!-- 12. CHECKOUT / CONTRACT (EPIC UPGRADE) -->
+        <section id="checkout" style="min-height: 100vh;">
             <div class="container center">
-                <div class="liquid-panel reveal interactive-tilt" style="max-width: 850px;">
+                <div class="liquid-panel reveal" data-tilt style="max-width: 850px; transition: height 0.4s var(--ease-fluid);" id="contract-panel">
                     <div class="liquid-content" style="text-align: center;">
                         <svg width="60" height="60" viewBox="0 0 100 100" style="margin-bottom: 2rem; margin-inline:auto;">
                             <path d="M50 30 Q65 10 65 30 Q50 50 50 30" fill="#fff"/>
                             <g mask="url(#apple-butt)"><path d="M50 40 C20 10, 0 40, 20 75 C35 95, 50 95, 50 90 C50 95, 65 95, 80 75 C100 40, 80 10, 50 40" fill="#fff"/></g>
                         </svg>
                         <h5>The 100-Year Contract</h5>
-                        <h1>交出靈魂，<br>NT$ 1,489,900 起。</h1>
-                        <p style="margin-bottom: 3.5rem;">購買即同意武裝醫療團隊為您進行<span class="highlight">脊椎晶片與鈦金屬永久植入縫合手術</span>。終止合約將導致神經熔毀。</p>
-                        <a href="#" style="display: inline-block; padding: 18px 50px; background: #fff; color: #000; border-radius: 35px; font-weight: 800; font-size: 1.3rem; text-decoration: none; box-shadow: 0 10px 30px rgba(255,255,255,0.2);">無條件投降並簽署</a>
+                        <h1>交出控制權，<br>NT$ 1,489,900 起。</h1>
+                        
+                        <div class="contract-action">
+                            <a href="#" class="btn-sign" id="btn-sign">無條件投降並簽署</a>
+                            
+                            <!-- Hidden Biometric Signature Pad -->
+                            <div class="signature-pad-container" id="signature-pad">
+                                <div class="signature-prompt">BIOMETRIC EXTRACTION IN PROGRESS<br>請在下方簽下姓名以提取您的生物 DNA</div>
+                                <canvas id="sig-canvas"></canvas>
+                                
+                                <div class="stamp-overlay" id="stamp-overlay">
+                                    <div class="stamp-text">SOUL BOUND</div>
+                                </div>
+                            </div>
+                            
+                            <div class="contract-msg-box">
+                                <div id="contract-msg">購買即同意武裝醫療團隊為您進行脊椎晶片與鈦金屬永久植入。終止合約將導致神經熔毀。</div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </section>
 
-    </div> <!-- End Smooth Wrapper -->
+    </div>
 
     <!-- =========================================
-         [JAVASCRIPT ENGINE] 12 TOYS & GPU LERP
+         [ARCH: ES6+ MODULE ARCHITECTURE]
          ========================================= -->
     <script>
-        let winH = window.innerHeight, winW = window.innerWidth;
-        let mouseX = winW / 2, mouseY = winH / 2, lastMouseX = mouseX, lastMouseY = mouseY;
-        let cursorX = mouseX, cursorY = mouseY, blobX = mouseX, blobY = mouseY;
-        let mouseVelocity = 0;
-        
-        // Scroll State
-        let targetScrollY = 0, currentScrollY = 0, maxScroll = 0;
-        let sectionData =[], panelData =[], tubeHeight = 0;
-        
-        // Toy States
-        let cRotX = -10, cRotY = 0, tRotX = -10, tRotY = 0;
-        let chaseX = 50, chaseY = 50, tChaseX = 50, tChaseY = 50;
-        let aromaAngle = 0, targetAromaAngle = 0;
+        /**
+         * AURA CyberMatrix Engine
+         * Senior Architect Version - Zero Layout Thrashing, Hardware Accelerated
+         */
+        class CyberMatrixEngine {
+            constructor() {
+                // DOM Cache
+                this.wrapper = document.getElementById('smooth-wrapper');
+                this.sections = Array.from(document.querySelectorAll('section'));
+                this.navLinks = document.querySelectorAll('.nav-links a');
+                this.liquidPanels = document.querySelectorAll('.liquid-panel');
+                this.cursor = document.getElementById('cursor-lens');
+                this.bgBlob = document.getElementById('mouse-blob');
+                this.scrollFill = document.getElementById('scroll-fill');
+                this.scrollDrop = document.getElementById('scroll-drop');
+                this.interactiveTilts = document.querySelectorAll('[data-tilt]');
 
-        // DOM
-        const scrollWrapper = document.getElementById('smooth-wrapper');
-        const scrollFill = document.getElementById('scroll-fill'), scrollDrop = document.getElementById('scroll-drop');
-        const cursorLens = document.getElementById('cursor-lens'), mouseBlob = document.getElementById('mouse-blob');
-        const bgBlobA = document.getElementById('blob-a'), bgBlobB = document.getElementById('blob-b');
-        const model3D = document.getElementById('model-3d');
-        const sections = document.querySelectorAll('section');
-        const liquidPanels = document.querySelectorAll('.liquid-panel');
-
-        // --- LAYOUT CACHING ---
-        function calculateLayout() {
-            winH = window.innerHeight; winW = window.innerWidth;
-            maxScroll = Math.max(0, scrollWrapper.offsetHeight - winH);
-            const tube = document.querySelector('.liquid-scroll-container');
-            tubeHeight = tube ? tube.offsetHeight - 20 : 0;
-
-            sectionData = Array.from(sections).map(sec => ({ el: sec, id: sec.id, top: sec.offsetTop, bottom: sec.offsetTop + sec.offsetHeight }));
-            panelData = Array.from(liquidPanels).map(panel => ({
-                el: panel, top: panel.getBoundingClientRect().top + currentScrollY, left: panel.getBoundingClientRect().left, height: panel.offsetHeight
-            }));
-        }
-        new ResizeObserver(calculateLayout).observe(scrollWrapper);
-
-        // --- INPUT ---
-        window.addEventListener('wheel', e => {
-            e.preventDefault(); targetScrollY += e.deltaY * 1.2;
-            targetScrollY = Math.max(0, Math.min(targetScrollY, maxScroll));
-        }, { passive: false });
-
-        window.addEventListener('mousemove', e => {
-            lastMouseX = mouseX; lastMouseY = mouseY;
-            mouseX = Math.max(0, Math.min(winW, e.clientX));
-            mouseY = Math.max(0, Math.min(winH, e.clientY));
-            mouseVelocity = Math.abs(mouseX - lastMouseX) + Math.abs(mouseY - lastMouseY);
-            cursorLens.style.opacity = '1';
-        });
-
-        // --- MASTER RENDER LOOP ---
-        function render() {
-            // Scroll Lerp
-            let scrollDiff = targetScrollY - currentScrollY;
-            currentScrollY += scrollDiff * 0.08;
-            scrollWrapper.style.transform = `translate3d(0, ${-currentScrollY}px, 0)`;
-
-            // GPU Liquid Scrollbar
-            let scrollPct = maxScroll > 0 ? currentScrollY / maxScroll : 0;
-            scrollPct = Math.max(0, Math.min(1, scrollPct));
-            scrollFill.style.transform = `scaleY(${scrollPct})`;
-            let dropY = -(scrollPct * tubeHeight);
-            let stretch = Math.min(2.5, 1 + Math.abs(scrollDiff) * 0.003);
-            scrollDrop.style.transform = `translate3d(0, ${dropY}px, 0) scale(${1/stretch}, ${stretch})`;
-
-            // Viewport Revealing
-            let viewTop = currentScrollY, viewBottom = currentScrollY + winH;
-            sectionData.forEach(sec => {
-                if (sec.top < viewBottom - (winH*0.1) && sec.bottom > viewTop) {
-                    sec.el.classList.add('in-view');
-                    document.querySelectorAll('.nav-links a').forEach(link => {
-                        link.classList.remove('active');
-                        if(link.getAttribute('href') === `#${sec.id}`) link.classList.add('active');
-                    });
-                }
-            });
-
-            // Liquid Panel Specular tracking
-            panelData.forEach(p => {
-                let screenY = p.top - currentScrollY;
-                if (screenY < winH && screenY + p.height > 0) {
-                    p.el.style.setProperty('--mx', `${mouseX - p.left}px`);
-                    p.el.style.setProperty('--my', `${mouseY - screenY}px`);
-                }
-            });
-
-            // Cursor & Background Lerp
-            cursorX += (mouseX - cursorX) * 0.25; cursorY += (mouseY - cursorY) * 0.25;
-            cursorLens.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0) translate(-50%, -50%)`;
-            blobX += (mouseX - blobX) * 0.04; blobY += (mouseY - blobY) * 0.04 + (scrollDiff * 0.05);
-            mouseBlob.style.transform = `translate3d(${blobX}px, ${blobY}px, 0)`;
-            bgBlobA.style.transform = `translate3d(0, ${-currentScrollY * 0.1}px, 0)`;
-            bgBlobB.style.transform = `translate3d(0, ${-currentScrollY * 0.05}px, 0)`;
-
-            // Toys Lerps
-            cRotX += (tRotX - cRotX) * 0.08; cRotY += (tRotY - cRotY) * 0.08;
-            if(model3D) model3D.style.transform = `translateZ(60px) rotateX(${cRotX}deg) rotateY(${cRotY}deg)`;
-
-            chaseX += (tChaseX - chaseX) * 0.15; chaseY += (tChaseY - chaseY) * 0.15;
-            const dot = document.getElementById('chase-dot');
-            if(dot) dot.style.transform = `translate3d(${chaseX}px, ${chaseY}px, 0)`;
-
-            aromaAngle += (targetAromaAngle - aromaAngle) * 0.1;
-            const knob = document.getElementById('aroma-knob');
-            if(knob) knob.style.transform = `rotate(${aromaAngle}deg) translateY(-80px)`;
-
-            // Analytics Graph dynamic update
-            const bars = document.querySelectorAll('.bar');
-            if(bars.length > 0) {
-                // Decay velocity
-                mouseVelocity *= 0.9;
-                let v = Math.min(1, mouseVelocity * 0.05);
-                // Shift values right
-                for(let i = bars.length - 1; i > 0; i--) {
-                    bars[i].style.transform = bars[i-1].style.transform;
-                    bars[i].style.background = bars[i-1].style.background;
-                }
-                // Update first bar
-                let h = Math.max(0.05, v);
-                bars[0].style.transform = `scaleY(${h})`;
-                bars[0].style.background = `rgb(255, ${Math.max(0, 100-v*200)}, ${Math.max(60, 100-v*100)})`;
-            }
-
-            requestAnimationFrame(render);
-        }
-        requestAnimationFrame(render);
-
-        // --- NAV CLICKS ---
-        document.querySelectorAll('.nav-links a').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetSec = sectionData.find(s => s.id === this.getAttribute('href').replace('#', ''));
-                if (targetSec) targetScrollY = Math.max(0, Math.min(targetSec.top, maxScroll));
-            });
-        });
-
-        // --- GLOBAL TILT ---
-        document.querySelectorAll('.interactive-tilt').forEach(el => {
-            let pTx = 0, pTy = 0, pCx = 0, pCy = 0;
-            el.addEventListener('mousemove', e => {
-                const rect = el.getBoundingClientRect();
-                pTx = (Math.max(-1, Math.min(1, ((e.clientY - rect.top) / rect.height) * 2 - 1))) * -6;
-                pTy = (Math.max(-1, Math.min(1, ((e.clientX - rect.left) / rect.width) * 2 - 1))) * 6;
-            });
-            el.addEventListener('mouseleave', () => { pTx = 0; pTy = 0; });
-            function rt() { pCx += (pTx - pCx)*0.1; pCy += (pTy - pCy)*0.1; el.style.transform = `perspective(1200px) rotateX(${pCx}deg) rotateY(${pCy}deg) scale3d(1.01, 1.01, 1.01)`; requestAnimationFrame(rt); }
-            rt();
-        });
-
-        // Hover States
-        document.querySelectorAll('a, .toy-box').forEach(el => {
-            el.addEventListener('mouseenter', () => cursorLens.classList.add('active'));
-            el.addEventListener('mouseleave', () => cursorLens.classList.remove('active'));
-        });
-
-        // --- TOY 1: 3D Model ---
-        const stage3D = document.querySelector('#pro .toy-box');
-        if(stage3D) {
-            stage3D.addEventListener('mousemove', e => {
-                const rect = stage3D.getBoundingClientRect();
-                tRotX = -10 + (Math.max(-1, Math.min(1, ((e.clientY - rect.top) / rect.height) * 2 - 1)) * -35);
-                tRotY = (Math.max(-1, Math.min(1, ((e.clientX - rect.left) / rect.width) * 2 - 1)) * 50);
-            });
-            stage3D.addEventListener('mouseleave', () => { tRotX = -10; tRotY = 0; });
-        }
-
-        // --- TOY 2: AURA Core ---
-        const chip = document.getElementById('chip-core');
-        if(chip) {
-            let chargeTimer;
-            chip.addEventListener('mousedown', () => {
-                chip.classList.add('charging');
-                chargeTimer = setTimeout(() => {
-                    const blast = document.getElementById('chip-shockwave');
-                    blast.style.animation = 'none'; void blast.offsetWidth; blast.style.animation = 'blast 0.8s ease-out forwards';
-                }, 500);
-            });
-            window.addEventListener('mouseup', () => { chip.classList.remove('charging'); clearTimeout(chargeTimer); });
-        }
-
-        // --- TOY 3: Sync ---
-        const syncBox = document.getElementById('sync-box');
-        const syncDrag = document.getElementById('sync-drag');
-        const syncTarget = document.getElementById('sync-target');
-        const syncFlare = document.getElementById('sync-flare');
-        if(syncBox) {
-            let isDraggingSync = false;
-            syncDrag.addEventListener('mousedown', () => isDraggingSync = true);
-            window.addEventListener('mouseup', () => { isDraggingSync = false; syncDrag.style.left = '20%'; syncDrag.style.top = '50%'; });
-            syncBox.addEventListener('mousemove', e => {
-                if(!isDraggingSync) return;
-                const rect = syncBox.getBoundingClientRect();
-                let x = e.clientX - rect.left, y = e.clientY - rect.top;
-                syncDrag.style.left = `${x}px`; syncDrag.style.top = `${y}px`;
-                // Collision
-                const tRect = syncTarget.getBoundingClientRect();
-                const tx = tRect.left - rect.left + 30, ty = tRect.top - rect.top + 30;
-                if(Math.hypot(x - tx, y - ty) < 40) {
-                    syncDrag.style.left = `${tx}px`; syncDrag.style.top = `${ty}px`;
-                    syncFlare.style.animation = 'none'; void syncFlare.offsetWidth; syncFlare.style.animation = 'sync-blast 1s cubic-bezier(0.1, 0.8, 0.3, 1) forwards';
-                    isDraggingSync = false; setTimeout(()=> {syncDrag.style.left = '20%'; syncDrag.style.top = '50%';}, 1000);
-                }
-            });
-        }
-
-        // --- TOY 4: Spine ---
-        const spine = document.getElementById('spine');
-        for(let i=0; i<10; i++) { const v = document.createElement('div'); v.className = 'vertebra'; spine.appendChild(v); }
-        spine.addEventListener('mousemove', e => {
-            const rect = spine.getBoundingClientRect();
-            const idx = Math.floor(Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height)) * 10);
-            document.querySelectorAll('.vertebra').forEach((v, i) => {
-                if(i === idx) v.classList.add('active'); else setTimeout(() => v.classList.remove('active'), 250);
-            });
-        });
-
-        // --- TOY 5: Fluid ---
-        const fluidTube = document.getElementById('fluid-tube'), fluidFill = document.getElementById('fluid-fill');
-        let isDraggingFluid = false;
-        fluidTube.addEventListener('mousedown', () => isDraggingFluid = true);
-        window.addEventListener('mouseup', () => isDraggingFluid = false);
-        fluidTube.addEventListener('mousemove', e => {
-            if(!isDraggingFluid) return;
-            let pct = Math.max(10, Math.min(100, 100 - (((e.clientY - fluidTube.getBoundingClientRect().top) / fluidTube.offsetHeight) * 100)));
-            fluidFill.style.transform = `scaleY(${pct / 30})`;
-            document.documentElement.style.setProperty('--fluid-color', `rgb(255, ${Math.max(0, 100-pct)}, ${Math.max(60, 150-pct)})`);
-        });
-
-        // --- TOY 6: Analytics Graph ---
-        const graphContainer = document.getElementById('graph-container');
-        for(let i=0; i<30; i++) { const b = document.createElement('div'); b.className='bar'; graphContainer.appendChild(b); }
-
-        // --- TOY 7: Aroma Synthesis ---
-        const aromaDial = document.getElementById('aroma-dial');
-        const aromaCloud = document.getElementById('aroma-cloud');
-        let isDraggingDial = false;
-        aromaDial.addEventListener('mousedown', () => isDraggingDial = true);
-        window.addEventListener('mouseup', () => isDraggingDial = false);
-        aromaDial.addEventListener('mousemove', e => {
-            if(!isDraggingDial) return;
-            const rect = aromaDial.getBoundingClientRect();
-            const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
-            targetAromaAngle = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI) + 90;
-            // Hue shift
-            const hue = (targetAromaAngle + 360) % 360;
-            aromaCloud.style.setProperty('--aroma-color', `hsla(${hue}, 100%, 50%, 0.3)`);
-            aromaCloud.style.opacity = '0.8';
-        });
-        aromaDial.addEventListener('mouseleave', () => aromaCloud.style.opacity = '0.5');
-
-        // --- TOY 8: Photonic Cleanse ---
-        const cleanseBox = document.getElementById('cleanse-box');
-        const uvLaser = document.getElementById('uv-laser');
-        for(let i=0; i<40; i++) {
-            const b = document.createElement('div'); b.className = 'bacteria';
-            b.style.top = `${Math.random()*80 + 10}%`; b.style.left = `${Math.random()*80 + 10}%`;
-            cleanseBox.appendChild(b);
-        }
-        cleanseBox.addEventListener('mousemove', e => {
-            const rect = cleanseBox.getBoundingClientRect();
-            const lx = e.clientX - rect.left, ly = e.clientY - rect.top;
-            uvLaser.style.opacity = '1';
-            uvLaser.style.transform = `translate(${lx - 20}px, ${ly - 20}px)`;
-            
-            document.querySelectorAll('.bacteria').forEach(b => {
-                if(b.style.opacity === '0') return;
-                const bx = b.offsetLeft + 6, by = b.offsetTop + 6;
-                if(Math.hypot(lx - bx, ly - by) < 30) {
-                    b.style.transform = 'scale(0)'; b.style.opacity = '0';
-                    setTimeout(() => { b.style.transform = 'scale(1)'; b.style.opacity = '1'; }, 3000);
-                }
-            });
-        });
-        cleanseBox.addEventListener('mouseleave', () => uvLaser.style.opacity = '0');
-
-        // --- TOY 9: Quantum Chastity Evasion ---
-        const arenaBox = document.getElementById('arena-box');
-        const tauntMsg = document.getElementById('taunt-msg');
-        arenaBox.addEventListener('mousemove', e => {
-            const rect = arenaBox.getBoundingClientRect();
-            const lX = e.clientX - rect.left, lY = e.clientY - rect.top;
-            const dCX = chaseX + 20, dCY = chaseY + 20;
-            
-            if(Math.hypot(lX - dCX, lY - dCY) < 110) {
-                const angle = Math.atan2(dCY - lY, dCX - lX);
-                tChaseX = chaseX + Math.cos(angle) * 150; tChaseY = chaseY + Math.sin(angle) * 150;
+                // State
+                this.vp = { w: window.innerWidth, h: window.innerHeight };
+                this.scroll = { current: 0, target: 0, max: 0 };
+                this.mouse = { x: this.vp.w/2, y: this.vp.h/2, cx: this.vp.w/2, cy: this.vp.h/2, v: 0 };
+                this.lastMouse = { x: this.vp.w/2, y: this.vp.h/2 };
                 
-                if (tChaseX < 0 || tChaseX > rect.width - 40 || tChaseY < 0 || tChaseY > rect.height - 40) {
-                    tChaseX = Math.random() * (rect.width - 80) + 20; tChaseY = Math.random() * (rect.height - 80) + 20;
-                    tauntMsg.innerText =["DENIED.", "TOO SLOW.", "LOCK ENGAGED", "QUANTUM JUMP", "SUBMIT."][Math.floor(Math.random()*5)];
-                    tauntMsg.style.opacity = '1'; setTimeout(() => tauntMsg.style.opacity = '0', 800);
+                // Caches for Zero Layout Thrashing
+                this.layoutCache = { sections: [], panels: [], tilts:[] };
+
+                // Toys
+                this.toys = new ToyRegistry(this);
+
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.setupIntersectionObserver();
+                this.updateLayoutCache();
+                
+                // Use ResizeObserver for accurate, debounced layout caching
+                const ro = new ResizeObserver(() => this.debounce(this.updateLayoutCache.bind(this), 100)());
+                ro.observe(this.wrapper);
+
+                requestAnimationFrame(() => this.render());
+            }
+
+            debounce(func, wait) {
+                let timeout;
+                return (...args) => { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), wait); };
+            }
+
+            // [PERF] Cache absolute positions to avoid getBoundingClientRect during render
+            updateLayoutCache() {
+                this.vp.w = window.innerWidth; this.vp.h = window.innerHeight;
+                this.scroll.max = Math.max(0, this.wrapper.offsetHeight - this.vp.h);
+                
+                this.layoutCache.sections = this.sections.map(s => ({ el: s, id: s.id, top: s.offsetTop, bottom: s.offsetTop + s.offsetHeight }));
+                this.layoutCache.panels = Array.from(this.liquidPanels).map(p => {
+                    const rect = p.getBoundingClientRect();
+                    return { el: p, top: rect.top + this.scroll.current, left: rect.left, w: rect.width, h: rect.height };
+                });
+                this.layoutCache.tilts = Array.from(this.interactiveTilts).map(t => {
+                    const rect = t.getBoundingClientRect();
+                    // Store state for lerping tilt and parallax translation
+                    return { el: t, content: t.querySelector('.liquid-content'), top: rect.top + this.scroll.current, left: rect.left, w: rect.width, h: rect.height, cx:0, cy:0, tx:0, ty:0 };
+                });
+
+                // Init Toys layout
+                this.toys.updateCache(this.scroll.current);
+            }
+
+            bindEvents() {
+                // Virtual Scroll
+                window.addEventListener('wheel', e => {
+                    e.preventDefault(); 
+                    this.scroll.target = Math.max(0, Math.min(this.scroll.target + e.deltaY * 1.2, this.scroll.max));
+                }, { passive: false });
+
+                // Pointer tracking
+                window.addEventListener('pointermove', e => {
+                    this.lastMouse.x = this.mouse.x; this.lastMouse.y = this.mouse.y;
+                    this.mouse.x = Math.max(0, Math.min(this.vp.w, e.clientX));
+                    this.mouse.y = Math.max(0, Math.min(this.vp.h, e.clientY));
+                    this.mouse.v = Math.abs(this.mouse.x - this.lastMouse.x) + Math.abs(this.mouse.y - this.lastMouse.y);
+                });
+
+                // Hover States
+                document.querySelectorAll('a, [data-toy], canvas, .btn-sign').forEach(el => {
+                    el.addEventListener('pointerenter', () => this.cursor.classList.add('active'));
+                    el.addEventListener('pointerleave', () => this.cursor.classList.remove('active'));
+                });
+
+                // Nav Links
+                this.navLinks.forEach(a => {
+                    a.addEventListener('click', e => {
+                        e.preventDefault();
+                        const id = a.getAttribute('href').replace('#', '');
+                        const target = this.layoutCache.sections.find(s => s.id === id);
+                        if(target) this.scroll.target = Math.max(0, Math.min(target.top, this.scroll.max));
+                    });
+                });
+            }
+
+            // [PERF] Use IntersectionObserver to toggle CSS animations (is-visible class)
+            setupIntersectionObserver() {
+                const observer = new IntersectionObserver(entries => {
+                    entries.forEach(e => {
+                        if(e.isIntersecting) {
+                            e.target.classList.add('is-visible');
+                            this.navLinks.forEach(link => {
+                                link.classList.remove('active');
+                                if(link.getAttribute('href') === `#${e.target.id}`) link.classList.add('active');
+                            });
+                        }
+                    });
+                }, { threshold: 0.2 });
+                this.sections.forEach(s => observer.observe(s));
+            }
+
+            //[PERF] The Master Rendering Loop
+            render() {
+                // 1. Scroll Lerp & Wrapper Transform (Smoother 0.06 momentum)
+                const scrollDiff = this.scroll.target - this.scroll.current;
+                this.scroll.current += scrollDiff * 0.06;
+                this.wrapper.style.transform = `translate3d(0, ${-this.scroll.current}px, 0)`;
+
+                // 2. GPU Liquid Scrollbar (The "滴管" Fix with Spring scaling)
+                const scrollPct = this.scroll.max > 0 ? Math.max(0, Math.min(1, this.scroll.current / this.scroll.max)) : 0;
+                const yOffset = 100 - (scrollPct * 100); 
+                this.scrollFill.style.transform = `translate3d(0, ${yOffset}%, 0)`;
+                // Non-linear spring stretch based on velocity
+                const stretch = Math.min(2.5, 1 + Math.abs(scrollDiff) * 0.005);
+                this.scrollDrop.style.transform = `translate3d(0, ${yOffset}%, 0) scale(${1/stretch}, ${stretch})`;
+
+                // 3. Cursor & Bg Blob Lerp
+                this.mouse.cx += (this.mouse.x - this.mouse.cx) * 0.3;
+                this.mouse.cy += (this.mouse.y - this.mouse.cy) * 0.3;
+                this.cursor.style.transform = `translate3d(${this.mouse.cx}px, ${this.mouse.cy}px, 0) translate(-50%, -50%)`;
+                this.bgBlob.style.transform = `translate3d(${this.mouse.cx}px, ${this.mouse.cy + scrollDiff*0.05}px, 0)`;
+
+                // 4. Update elements based on Layout Cache
+                this.layoutCache.panels.forEach(p => {
+                    const screenY = p.top - this.scroll.current;
+                    if(screenY < this.vp.h && screenY + p.h > 0) {
+                        p.el.style.setProperty('--mx', `${this.mouse.x - p.left}px`);
+                        p.el.style.setProperty('--my', `${this.mouse.y - screenY}px`);
+                    }
+                });
+
+                // 5. Global 3D Tilt Lerp + Parallax Inner Content
+                this.layoutCache.tilts.forEach(t => {
+                    const screenY = t.top - this.scroll.current;
+                    if(screenY < this.vp.h && screenY + t.h > 0) {
+                        if(this.mouse.x >= t.left && this.mouse.x <= t.left+t.w && this.mouse.y >= screenY && this.mouse.y <= screenY+t.h) {
+                            t.ty = (Math.max(-1, Math.min(1, ((this.mouse.y - screenY) / t.h) * 2 - 1))) * -6;
+                            t.tx = (Math.max(-1, Math.min(1, ((this.mouse.x - t.left) / t.w) * 2 - 1))) * 6;
+                        } else { t.tx = 0; t.ty = 0; }
+                        t.cx += (t.tx - t.cx) * 0.1; t.cy += (t.ty - t.cy) * 0.1;
+                        t.el.style.transform = `perspective(1200px) rotateX(${t.cy}deg) rotateY(${t.cx}deg) scale3d(1.01, 1.01, 1.01)`;
+                        // Content Parallax (Moves opposite to tilt)
+                        if(t.content) {
+                            t.content.style.transform = `translateZ(40px) translate3d(${t.cx * -0.5}px, ${t.cy * 0.5}px, 0)`;
+                        }
+                    }
+                });
+
+                // 6. Execute active toys
+                this.toys.render(this.mouse, this.scroll.current);
+
+                requestAnimationFrame(() => this.render());
+            }
+        }
+
+        /**
+         * ToyRegistry - Manages all interactive components cleanly
+         */
+        class ToyRegistry {
+            constructor(engine) {
+                this.engine = engine;
+                this.cache = {};
+                this.init3DModel(); this.initChip(); this.initSync(); this.initSpine();
+                this.initFluid(); this.initAnalytics(); this.initAroma(); this.initCleanse();
+                this.initDome(); this.initMattress(); this.initContract();
+            }
+
+            updateCache(scrollY) {['model', 'sync', 'fluid', 'aroma', 'cleanse', 'dome', 'contract'].forEach(key => {
+                    if(this.cache[key] && this.cache[key].el) {
+                        const rect = this.cache[key].el.getBoundingClientRect();
+                        this.cache[key].top = rect.top + scrollY;
+                        this.cache[key].left = rect.left;
+                        this.cache[key].w = rect.width;
+                        this.cache[key].h = rect.height;
+                    }
+                });
+            }
+
+            render(mouse, scrollY) {
+                // 3D Model
+                const m = this.cache.model;
+                if(m && m.el) {
+                    const sY = m.top - scrollY;
+                    if(mouse.x >= m.left && mouse.x <= m.left+m.w && mouse.y >= sY && mouse.y <= sY+m.h) {
+                        m.ty = -10 + ((((mouse.y - sY) / m.h) * 2 - 1) * -35);
+                        m.tx = ((((mouse.x - m.left) / m.w) * 2 - 1) * 50);
+                    } else { m.tx = 0; m.ty = -10; }
+                    m.cx += (m.tx - m.cx) * 0.08; m.cy += (m.ty - m.cy) * 0.08;
+                    m.svg.style.transform = `translateZ(60px) rotateX(${m.cy}deg) rotateY(${m.cx}deg)`;
+                }
+
+                // Aroma
+                const a = this.cache.aroma;
+                if(a && a.knob) {
+                    a.angle += (a.targetAngle - a.angle) * 0.1;
+                    a.knob.style.transform = `rotate(${a.angle}deg) translateY(-80px)`;
+                }
+
+                // Cleanse Laser
+                const c = this.cache.cleanse;
+                if(c && c.el) {
+                    const sY = c.top - scrollY;
+                    if(mouse.x >= c.left && mouse.x <= c.left+c.w && mouse.y >= sY && mouse.y <= sY+c.h) {
+                        c.laser.style.opacity = '1';
+                        c.laser.style.transform = `translate3d(${mouse.x - c.left - 20}px, ${mouse.y - sY - 20}px, 0)`;
+                        document.querySelectorAll('.bacteria').forEach(b => {
+                            if(b.style.opacity === '0') return;
+                            if(Math.hypot((mouse.x-c.left) - (b.offsetLeft+6), (mouse.y-sY) - (b.offsetTop+6)) < 30) {
+                                b.style.transform = 'scale(0)'; b.style.opacity = '0';
+                                setTimeout(() => { b.style.transform = 'scale(1)'; b.style.opacity = '1'; }, 3000);
+                            }
+                        });
+                    } else { c.laser.style.opacity = '0'; }
+                }
+
+                // Dome Evasion
+                const d = this.cache.dome;
+                if(d && d.el) {
+                    const sY = d.top - scrollY;
+                    if(sY < this.engine.vp.h && sY + d.h > 0) {
+                        const lX = mouse.x - d.left, lY = mouse.y - sY;
+                        const dist = Math.hypot(lX - d.cx, lY - d.cy);
+                        if(dist < 100) {
+                            const angle = Math.atan2(d.cy - lY, d.cx - lX);
+                            d.tcx = d.cx + Math.cos(angle) * 120;
+                            d.tcy = d.cy + Math.sin(angle) * 120;
+                            
+                            if (d.tcx < 20 || d.tcx > d.w - 60 || d.tcy < 20 || d.tcy > d.h - 60) {
+                                d.tcx = Math.random() * (d.w - 100) + 30; d.tcy = Math.random() * (d.h - 100) + 30;
+                                d.msg.style.opacity = '1'; setTimeout(() => d.msg.style.opacity = '0', 800);
+                            }
+                        }
+                        d.cx += (d.tcx - d.cx) * 0.15; d.cy += (d.tcy - d.cy) * 0.15;
+                        d.dot.style.transform = `translate3d(${d.cx}px, ${d.cy}px, 0)`;
+                    }
+                }
+
+                // Analytics - Shift arrays instead of DOM updates loop (Perf)
+                if(this.cache.graphBars) {
+                    mouse.v *= 0.9; // decay
+                    let v = Math.min(1, mouse.v * 0.05);
+                    const bars = this.cache.graphBars;
+                    // Shift values
+                    for(let i = bars.length - 1; i > 0; i--) {
+                        bars[i].style.transform = bars[i-1].style.transform;
+                        bars[i].style.background = bars[i-1].style.background;
+                    }
+                    bars[0].style.transform = `scaleY(${Math.max(0.05, v)})`;
+                    bars[0].style.background = `rgb(255, ${Math.max(0, 100-v*200)}, ${Math.max(60, 100-v*100)})`;
                 }
             }
-        });
 
-        // --- TOY 10: G2 Mattress ---
-        const mattress = document.getElementById('mattress-grid');
-        for(let i=0; i<144; i++) {
-            const cell = document.createElement('div'); cell.className = 'mattress-cell';
-            cell.addEventListener('mouseenter', () => { cell.classList.add('pressed'); setTimeout(() => cell.classList.remove('pressed'), 600); });
-            mattress.appendChild(cell);
+            init3DModel() {
+                const el = document.querySelector('[data-toy="3d-model"]');
+                if(el) this.cache.model = { el, svg: el.querySelector('svg'), cx:0, cy:-10, tx:0, ty:-10 };
+            }
+
+            initChip() {
+                const chip = document.getElementById('chip-core');
+                if(!chip) return;
+                chip.addEventListener('pointerdown', (e) => { chip.setPointerCapture(e.pointerId); chip.classList.add('charging'); });
+                chip.addEventListener('pointerup', () => chip.classList.remove('charging'));
+                chip.addEventListener('pointercancel', () => chip.classList.remove('charging'));
+            }
+
+            initSync() {
+                const box = document.querySelector('[data-toy="sync"]');
+                const drag = document.getElementById('sync-drag'), target = document.getElementById('sync-target');
+                if(!box || !drag) return;
+                
+                let isDragging = false;
+                this.cache.sync = { el: box };
+
+                drag.addEventListener('pointerdown', (e) => {
+                    isDragging = true; drag.setPointerCapture(e.pointerId);
+                });
+                drag.addEventListener('pointermove', (e) => {
+                    if(!isDragging) return;
+                    const c = this.cache.sync;
+                    const sY = c.top - this.engine.scroll.current;
+                    let x = e.clientX - c.left, y = e.clientY - sY;
+                    drag.style.transform = `translate3d(${x-30}px, ${y-30}px, 0)`; 
+
+                    const tx = target.offsetLeft, ty = target.offsetTop;
+                    if(Math.hypot(x - tx, y - ty) < 40) {
+                        drag.style.transform = `translate3d(${tx-30}px, ${ty-30}px, 0)`;
+                        isDragging = false; 
+                        setTimeout(()=> drag.style.transform = `translate3d(0, -50%, 0)`, 1000);
+                    }
+                });
+                const reset = () => { isDragging = false; drag.style.transform = `translate3d(0, -50%, 0)`; };
+                drag.addEventListener('pointerup', reset);
+            }
+
+            initSpine() {
+                const spine = document.getElementById('spine');
+                if(!spine) return;
+                for(let i=0; i<10; i++) { const v = document.createElement('div'); v.className = 'vertebra'; spine.appendChild(v); }
+                spine.addEventListener('pointermove', e => {
+                    const rect = spine.getBoundingClientRect();
+                    const idx = Math.floor(Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height)) * 10);
+                    document.querySelectorAll('.vertebra').forEach((v, i) => {
+                        if(i === idx) v.classList.add('active'); else setTimeout(() => v.classList.remove('active'), 250);
+                    });
+                });
+            }
+
+            initFluid() {
+                const tube = document.getElementById('fluid-tube'), fill = document.getElementById('fluid-fill');
+                if(!tube) return;
+                
+                let isDragging = false;
+                this.cache.fluid = { el: tube };
+
+                const updateFluid = (e) => {
+                    const c = this.cache.fluid;
+                    const sY = c.top - this.engine.scroll.current;
+                    let pct = Math.max(10, Math.min(100, 100 - (((e.clientY - sY) / c.h) * 100)));
+                    fill.style.transform = `translate3d(0, ${100 - pct}%, 0)`;
+                    const r = 255, g = Math.max(0, 100-pct), b = Math.max(60, 150-pct);
+                    document.documentElement.style.setProperty('--accent', `rgb(${r}, ${g}, ${b})`);
+                };
+
+                tube.addEventListener('pointerdown', (e) => {
+                    isDragging = true; tube.setPointerCapture(e.pointerId); updateFluid(e);
+                });
+                tube.addEventListener('pointermove', (e) => { if(isDragging) updateFluid(e); });
+                tube.addEventListener('pointerup', () => isDragging = false);
+            }
+
+            initAnalytics() {
+                const container = document.getElementById('graph-container');
+                if(!container) return;
+                this.cache.graphBars = Array.from({length: 30}).map(() => {
+                    const b = document.createElement('div');
+                    b.className = 'bar';
+                    container.appendChild(b);
+                    return b;
+                });
+            }
+
+            initAroma() {
+                const dial = document.getElementById('aroma-dial');
+                const knob = document.getElementById('aroma-knob');
+                const cloud = document.getElementById('aroma-cloud');
+                if(!dial) return;
+                
+                this.cache.aroma = { el: dial, knob, cloud, angle: 0, targetAngle: 0 };
+                let isDragging = false;
+                
+                dial.addEventListener('pointerdown', (e) => { 
+                    isDragging = true; dial.setPointerCapture(e.pointerId); 
+                });
+                
+                dial.addEventListener('pointermove', (e) => {
+                    if(!isDragging) return;
+                    const c = this.cache.aroma;
+                    const sY = c.top - this.engine.scroll.current;
+                    const cx = c.left + c.w/2, cy = sY + c.h/2;
+                    c.targetAngle = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI) + 90;
+                    
+                    const hue = (c.targetAngle + 360) % 360;
+                    cloud.style.setProperty('--aroma-color', `hsla(${hue}, 100%, 50%, 0.3)`);
+                    cloud.style.opacity = '0.8';
+                });
+                
+                dial.addEventListener('pointerup', () => { isDragging = false; cloud.style.opacity = '0.5'; });
+            }
+
+            initCleanse() {
+                const box = document.getElementById('cleanse-box');
+                const laser = document.getElementById('uv-laser');
+                if(!box) return;
+                
+                this.cache.cleanse = { el: box, laser };
+                for(let i=0; i<40; i++) {
+                    const b = document.createElement('div'); 
+                    b.className = 'bacteria';
+                    b.style.top = `${Math.random()*80 + 10}%`; 
+                    b.style.left = `${Math.random()*80 + 10}%`;
+                    box.appendChild(b);
+                }
+            }
+
+            initDome() {
+                const arena = document.getElementById('arena-box');
+                const dot = document.getElementById('chase-dot');
+                const msg = document.getElementById('taunt-msg');
+                if(arena) this.cache.dome = { el: arena, dot, msg, cx: 50, cy: 50, tcx: 50, tcy: 50 };
+            }
+
+            initMattress() {
+                const mattress = document.getElementById('mattress-grid');
+                if(!mattress) return;
+                for(let i=0; i<144; i++) {
+                    const cell = document.createElement('div'); 
+                    cell.className = 'mattress-cell';
+                    cell.addEventListener('pointerenter', () => { 
+                        cell.classList.add('pressed'); 
+                        setTimeout(() => cell.classList.remove('pressed'), 600); 
+                    });
+                    mattress.appendChild(cell);
+                }
+            }
+
+            //[BUGFIX: CANVAS DPI & COORDINATE MAPPING]
+            initContract() {
+                const btn = document.getElementById('btn-sign');
+                const pad = document.getElementById('signature-pad');
+                const canvas = document.getElementById('sig-canvas');
+                const stamp = document.getElementById('stamp-overlay');
+                const msg = document.getElementById('contract-msg');
+                if(!btn || !canvas) return;
+
+                let ctx = canvas.getContext('2d');
+                let isDrawing = false;
+                let pixelsDrawn = 0;
+                let isSigned = false;
+
+                const setupCanvas = () => {
+                    const rect = canvas.getBoundingClientRect();
+                    const dpr = window.devicePixelRatio || 1;
+                    canvas.width = rect.width * dpr;
+                    canvas.height = rect.height * dpr;
+                    ctx.scale(dpr, dpr);
+                    canvas.style.width = `${rect.width}px`;
+                    canvas.style.height = `${rect.height}px`;
+                    
+                    ctx.lineWidth = 4;
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                    ctx.strokeStyle = '#ff003c';
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = '#ff003c';
+                };
+
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    btn.style.display = 'none';
+                    pad.style.display = 'block';
+                    
+                    setupCanvas();
+                    // Force update layout cache as panel height changed
+                    setTimeout(() => this.engine.updateLayoutCache(), 100);
+                });
+
+                // Handle resize for retina display
+                window.addEventListener('resize', () => { if(pad.style.display === 'block') setupCanvas(); });
+
+                const draw = (e) => {
+                    if(!isDrawing || isSigned) return;
+                    const rect = canvas.getBoundingClientRect();
+                    // rect.left/top is relative to viewport. e.clientX/Y is also viewport.
+                    // This is perfectly robust even inside the virtual scroll wrapper!
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+
+                    pixelsDrawn++;
+                    
+                    // Trigger absolute doom
+                    if(pixelsDrawn > 80 && !isSigned) {
+                        isSigned = true;
+                        stamp.classList.add('stamped');
+                        
+                        msg.style.color = '#ff003c';
+                        msg.style.fontWeight = '700';
+                        msg.innerHTML = "DNA 擷取完成。<br>您的下半身控制權已成功移交至 AURA 神經網路。<br>祝您有美好的一百年。";
+                        
+                        // Taptic Screen Shake
+                        document.body.classList.add('shake-active');
+                        setTimeout(() => document.body.classList.remove('shake-active'), 400);
+                    }
+                };
+
+                canvas.addEventListener('pointerdown', (e) => {
+                    if(isSigned) return;
+                    isDrawing = true;
+                    canvas.setPointerCapture(e.pointerId);
+                    const rect = canvas.getBoundingClientRect();
+                    ctx.beginPath();
+                    ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+                });
+
+                canvas.addEventListener('pointermove', draw);
+                canvas.addEventListener('pointerup', () => { isDrawing = false; ctx.beginPath(); });
+                canvas.addEventListener('pointercancel', () => { isDrawing = false; ctx.beginPath(); });
+            }
         }
+
+        // Bootstrap Engine
+        window.addEventListener('DOMContentLoaded', () => new CyberMatrixEngine());
 
     </script>
 </body>
